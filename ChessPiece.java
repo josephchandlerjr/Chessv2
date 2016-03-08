@@ -32,6 +32,28 @@ public abstract class ChessPiece{
 	public int getDirection(){ 
 		return 0; 
 	}
+	public static ChessPiece pieceFromString(String pieceID){
+		System.out.println(pieceID);
+		String color = "WHITE";
+		if(pieceID.substring(0,1).equals("B")){
+			color = "BLACK";
+		}
+		if(pieceID.length() > 1){
+			switch(pieceID.substring(1,2)){
+				case("R"): return new Rook(color); 
+				case("B"): return new Bishop(color); 
+				case("N"): return new Knight(color);
+				case("Q"): return new Queen(color);
+				case("K"): return new King(color);
+			}
+		}
+		else{
+			return new Pawn(color);
+		}
+		assert 1==2 : "never should be here";
+		return null;
+
+	}
 
 	/**
 	 * gets color of piece

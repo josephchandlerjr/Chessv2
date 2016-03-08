@@ -28,7 +28,13 @@ public class ChessView implements Observer{
 	public void update(){
 		ChessState state = model.getState();
 		updateBoard(state.board);
-		//do something with State object
+		if(state.promotion){
+			int row = state.rowColOfPromotion[0];
+			int col = state.rowColOfPromotion[1];
+			String color = state.lastPlayerToMove;
+			String piece = getPromotion();
+			controller.promote(row,col,color,piece);
+		}
 	}
 	public void updateBoard(String[][] modelBoard){
 		for(int r=0; r<8; r++){
@@ -44,6 +50,25 @@ public class ChessView implements Observer{
 				}
 			}
 		}
+	}
+
+	public String getPromotion(){
+		Object[] possibleValues = {"Queen","Knight"};
+		Object selectedValue = JOptionPane.showInputDialog(null,
+				                                   "Choose one",
+								   "Input",
+								   JOptionPane.INFORMATION_MESSAGE,
+								   null,
+								   possibleValues,
+								   possibleValues[0]);
+		String result = (String)(selectedValue);
+		switch(result){
+			case("Queen") : return "Q";
+			case("Knight"): return "N";
+		}
+		assert 1==2 : "shouldn't be here";
+		return null;
+
 	}
 
 	public Image findResourceByPieceID(String pieceID){
@@ -72,7 +97,7 @@ public class ChessView implements Observer{
 		return image;
 	}
 
-        public void executeMove(int fromRow, int fromCol, int toRow, int toCol){
+        public void takeAction(int fromRow, int fromCol, int toRow, int toCol){
 		controller.takeAction(fromRow, fromCol, toRow, toCol);
 	}
 
@@ -133,9 +158,10 @@ public class ChessView implements Observer{
 			SquarePanel from = (SquarePanel)(lastPressed.getSource());
 			SquarePanel to = (SquarePanel)(lastEntered.getSource());
 			System.out.printf("%s%s %s%s\n",from.row, from.col, to.row, to.col);
-			executeMove(from.row,from.col,to.row,to.col);
+			takeAction(from.row,from.col,to.row,to.col);
 		}  
 	}//end inner class BoardListener
+
 }
 
 class SquarePanel extends JPanel {

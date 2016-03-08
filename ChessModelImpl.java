@@ -7,6 +7,7 @@ public class ChessModelImpl implements ChessModel{
 	Square[][] board;
 	String player = "WHITE";
 	String opponent = "BLACK";
+	String lastPlayerToMove;
 	Square initWK;
 	Square initBK;
 	Square initWKR;
@@ -24,7 +25,7 @@ public class ChessModelImpl implements ChessModel{
 		board = new Square[8][8];
 		initializeBoard();
 		state = new ChessState();
-		updateStateObject();
+		updateStateObject(false,false,null);
 		//set initial location of pieces involved in castling
 		initBQR = board[0][0];
 		initBKR = board[0][7];
@@ -43,7 +44,24 @@ public class ChessModelImpl implements ChessModel{
 			iterator.next().update();
 		}
 	}
-	public void updateStateObject(){
+	public void promote(int row, int col, String color, String piece){
+		ChessPiece promoteTo = ChessPiece.pieceFromString(color.substring(0,1)+piece);
+		setPiece(row, col, promoteTo);
+		updateStateObject(false,false,null);
+		notifyObservers();
+	}
+	public void updateStateObject(boolean isPawn, boolean endRow, Square toSquare){
+		if(isPawn && endRow){
+			state.promotion = true;
+			state.rowColOfPromotion[0] = toSquare.getRow();
+			state.rowColOfPromotion[1] = toSquare.getCol();
+		}
+		else{
+			state.promotion = false;
+			state.rowColOfPromotion[0] = 10;
+			state.rowColOfPromotion[1] = 10;
+		}
+		state.lastPlayerToMove = lastPlayerToMove;
 		state.blackInCheck = blackCheck; //true if black king in check
 		state.whiteInCheck = whiteCheck;
 		state.whiteHasWon  = blackCheckmate; //true if black king in checkmate
@@ -121,11 +139,11 @@ public class ChessModelImpl implements ChessModel{
 		ChessMove move = new ChessMove(notation, myColor, fromSquare, toSquare);
 
 		boolean isPawn = ChessPiece.isPawn(fromSquare.getPiece());
+		boolean endRow = toSquare.getRow()==7 || toSquare.getRow()==0;
 		boolean executed = takeAction(move);
  
-		// check if we need to promote pawn and if remote game send move made over socket
 		if (executed){
-			updateStateObject();
+			updateStateObject(isPawn,endRow,toSquare);
 			notifyObservers();
 		}
 	}
@@ -189,15 +207,8 @@ public class ChessModelImpl implements ChessModel{
 			};
 		}
 
-		if(move.isPromotion())
-		{
-			int toRow = move.getTo().getRow();
-			int toCol = move.getTo().getCol();
-			setPiece(toRow,toCol,move.getPromoteTo());
-
-		}
-		
 		scoreSheet.addMove(move);	
+		lastPlayerToMove = player;
 		updateCheckStatus();
 
 		if(colorInCheckmate("BLACK")){blackCheckmate = true;}

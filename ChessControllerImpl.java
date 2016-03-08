@@ -1,12 +1,29 @@
 import java.io.*;
 
-public class ChessControllerImpl extends ChessController{
-	public ChessControllerImpl(ObjectInputStream whitePlayer,ObjectInputStream blackPlayer, ChessModel model){
-		super(whitePlayer,blackPlayer, model);
+public class ChessControllerImpl implements ChessController{
+	ObjectInputStream whitePlayer;
+	ObjectInputStream blackPlayer;
+	ChessModel model;
+
+	public ChessControllerImpl(ObjectInputStream whitePlayer,
+			       ObjectInputStream blackPlayer,
+			       ChessModel model){
+		this.whitePlayer = whitePlayer;
+		this.blackPlayer = blackPlayer;
+		this.model = model;
+		model.registerObserver(this);
 	}
 
         public void takeAction(int fromRow, int fromCol, int toRow, int toCol){
 		model.takeAction(fromRow, fromCol, toRow, toCol);
 	}
+	public void promote(int row, int col, String color, String piece){
+		if(piece != null){
+			model.promote(row, col, color, piece);
+		}
+	}
+	public void update(){
+	}
+
 
 }

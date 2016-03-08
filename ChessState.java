@@ -13,6 +13,9 @@ public class ChessState{
 	boolean blackInCheck;
 	boolean whiteHasWon;
 	boolean blackHasWon;
+	boolean promotion;
+	String lastPlayerToMove;
+	int[] rowColOfPromotion = new int[2];
 
 	public ChessState(){
 		this.board = new String[8][8];
