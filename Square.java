@@ -10,6 +10,8 @@ import java.util.*;
 public class Square{
 	private final int ROW;
 	private final int COL;
+	private final String rank;
+	private final String file;
 	private ChessPiece piece;
 	private ChessPiece previousPiece;
 	private Square EAST;
@@ -24,9 +26,30 @@ public class Square{
 	public Square(int row, int col){
 		this.ROW = row;
 		this.COL = col;
+		this.rank = rowToRank(row);
+		this.file = columnToFile(col);
 		this.piece = null;
 	}
-
+	/**
+	 * static method that converts column number to file notation
+	 * @param column column number between 0-7
+	 * @return letter of corresponding file in range a-h
+	 */
+	public static String columnToFile(int column)
+	{
+		String file = "abcdefgh".substring(column,column+1);
+		return file;
+	}
+	/**
+	 * static method that converts row number to rank notation
+	 * @param row row number between 0-7
+	 * @return number of corresponding file in range 1-8
+	 */
+	public static String rowToRank(int row)
+	{
+		String rank = "87654321".substring(row ,row+1);
+		return rank;
+	}
 	//helper methods when castling
 	public void setEAST(Square e){ EAST = e;}
 	public void setWEST(Square w){ WEST = w;}
@@ -40,6 +63,12 @@ public class Square{
 	public ChessPiece getPreviousPiece()
 	{
 		return previousPiece;
+	}
+	public String getRank(){
+		return rank;
+	}
+	public String getFile(){
+		return file;
 	}
 	/**
 	 * places piece on this square

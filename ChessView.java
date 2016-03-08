@@ -16,16 +16,56 @@ public class ChessView implements Observer{
 
 	JFrame frame;
 	JPanel mainPanel;
+	SquarePanel[][] squares;
 
 	public ChessView(ChessController controller, ChessModel model){
 		this.controller = controller;
 		this.model = model;
-		//model.registerObserver(this);
+		model.registerObserver(this);
 		build();
+		update();
 	}
 	public void update(){
 		ChessState state = model.getState();
+		updateBoard(state.board);
 		//do something with State object
+	}
+	public void updateBoard(String[][] modelBoard){
+		for(int r=0; r<8; r++){
+			for(int c=0; c<8; c++){
+				String pieceID = modelBoard[r][c];
+				if(pieceID != null){
+					Image image = findResourceByPieceID(pieceID);
+					squares[r][c].setImage(image);
+				}
+			}
+		}
+	}
+
+	public Image findResourceByPieceID(String pieceID){
+		String color = "White";
+		String piece = "Pawn";
+		if(pieceID.substring(0,1).equals("B")){
+			color = "Black";
+		}
+		if(pieceID.length() > 1){
+			switch(pieceID.substring(1,2)){
+				case("R"): piece = "Rook";
+					   break;
+				case("B"): piece = "Bishop";
+					   break;
+				case("N"): piece = "Knight";
+					   break;
+				case("Q"): piece = "Queen";
+					   break;
+				case("K"): piece = "King";
+					   break;
+			}
+		}
+
+		String fileName =  color + piece + ".png";
+		Image image = new ImageIcon(fileName).getImage(); 
+		return image;
 	}
 
         public void executeMove(int fromRow, int fromCol, int toRow, int toCol){
@@ -58,6 +98,7 @@ public class ChessView implements Observer{
 	}
 	public void initialize(){
 		BoardListener listener = new BoardListener();
+		squares = new SquarePanel[8][8];
 		Color squareColor = whiteSquareColor;
 		for (int row = 0; row < 8; row++){
 			squareColor = otherSquareColor(squareColor);
@@ -66,6 +107,7 @@ public class ChessView implements Observer{
 				p.setColor(squareColor);
 				p.addMouseListener(listener);
 				mainPanel.add(p);
+				squares[row][col] = p;
 				squareColor = otherSquareColor(squareColor);
 			}
 		}
@@ -105,8 +147,9 @@ class SquarePanel extends JPanel {
 	public void setColor(Color color){
 		this.color = color;
 	}
-	public void setImageIcon(Image image){
+	public void setImage(Image image){
 		this.image = image;
+		this.repaint();
 	}
 	public void paintComponent(Graphics g) {
 		g.setColor(color);

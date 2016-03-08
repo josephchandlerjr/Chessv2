@@ -21,8 +21,10 @@ public class ChessModelImpl implements ChessModel{
 
 	public ChessModelImpl(){
 		scoreSheet = new Score();
+		board = new Square[8][8];
 		initializeBoard();
-		state = new ChessState(board);
+		state = new ChessState();
+		updateStateObject();
 		//set initial location of pieces involved in castling
 		initBQR = board[0][0];
 		initBKR = board[0][7];
@@ -35,10 +37,30 @@ public class ChessModelImpl implements ChessModel{
 	public void registerObserver(Observer obs){
 		observers.add(obs);
 	}
-	public void updateObservers(){
+	public void notifyObservers(){
 		Iterator<Observer> iterator = observers.iterator();
 		while(iterator.hasNext()){
 			iterator.next().update();
+		}
+	}
+	public void updateStateObject(){
+		state.blackInCheck = blackCheck; //true if black king in check
+		state.whiteInCheck = whiteCheck;
+		state.whiteHasWon  = blackCheckmate; //true if black king in checkmate
+		state.blackHasWon = whiteCheckmate;
+		for(int r = 0; r < 8; r++){
+			for(int c=0; c < 8; c++){
+				Square s = board[r][c];
+				String pieceColor = s.getPieceColor();
+				if(pieceColor.equals("")){
+					state.board[r][c] = null;
+				}
+				else{
+					state.board[r][c] = pieceColor.substring(0,1) + 
+						            s.getPiece().toString();
+				}
+				
+			}
 		}
 	}
 
@@ -67,11 +89,8 @@ public class ChessModelImpl implements ChessModel{
 		return whiteCheckmate;
 	}
 	public String getNotationFromSquare(Square s) {
-		int r = s.getRow();
-		int c = s.getCol();
-		
-		String file = ChessNotation.columnToFile(c);
-		String rank = ChessNotation.rowToRank(r);
+		String file = s.getFile();
+		String rank = s.getRank();
 		String pieceID = "";
 		ChessPiece piece = s.getPiece();
 		if(piece != null){
@@ -79,7 +98,7 @@ public class ChessModelImpl implements ChessModel{
 		}
 		return pieceID + file + rank;
 	}
-	public void takeAction(int fromRow, int fromCol, int toRow, toCol){
+	public void takeAction(int fromRow, int fromCol, int toRow, int toCol){
 		Square fromSquare = getSquare(fromRow,fromCol);
 		Square toSquare = getSquare(toRow,toCol);
 	        String myColor  = fromSquare.getPieceColor();
@@ -106,42 +125,13 @@ public class ChessModelImpl implements ChessModel{
  
 		// check if we need to promote pawn and if remote game send move made over socket
 		if (executed){
-			if(localGame){
-				this.myColor = game.player; //set instance variable not local variable
-			}
-			else {
-				try{
-					//fromRow,fromCol, fromNotion, toNotation, toSquare,fromSquare
-					int[] coord = {fromSquare.getRow(),fromSquare.getCol(),
-						       toSquare.getRow(), toSquare.getCol()};
-					String[] notations = {fromNotation,toNotation};
-					oos.writeObject(coord);
-					oos.writeObject(notations);
-				}catch(Exception ex){
-					JOptionPane.showMessageDialog( null,
-								      "Connection to server lost",
-								      "Bad Connection",
-								      JOptionPane.WARNING_MESSAGE);
-					gui.frame.dispose();
-				}
-			}
-			if(isPawn){
-				int row = toSquare.getRow(); 
-				if( row == 0 || row == 7){
-					promotePawn(toSquare);
-					game.updateCheckStatus();
-				}
-			}
-			gui.frame.repaint();
-			setStatus();
+			String temp = opponent;
+			opponent = player;
+			player = temp;
+			updateStateObject();
+			notifyObservers();
 		}
 	}
-	}
-
-	/** controller for game, used by Chess object housing this game
-	 * @param move ChessMove object containing all info it needs
-	 * @return true if move is executed else false
-	 */
 	public boolean takeAction(ChessMove move)
 	{
 		if(move.isCastle())
@@ -936,15 +926,6 @@ public class ChessModelImpl implements ChessModel{
 	public void setPiece(int row, int col, ChessPiece piece) {
 		Square square = board[row][col];
 		square.setPiece(piece);
-	}
-	/**
-	 * adds a Square object to the board array
-	 * @param color color of square, either "BLACK" or "WHITE"
-	 * @param row row the square will lie on
-	 * @param col column square will lies on
-	 */
-	public void setSquare(String color, int row, int col) {
-		board[row][col] = new Square(color,row,col);
 	}
 
 	 /**
