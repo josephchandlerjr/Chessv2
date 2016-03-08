@@ -7,6 +7,11 @@ import java.io.*;
 import java.util.*;
 import javax.imageio.*;
 
+/**
+ * the View in MVC
+ * for user actions or actions which impact the model this
+ * class will defer to the ChessControlle object
+ */
 public class ChessView implements Observer{
 	ChessController controller;
 	ChessModel model;
