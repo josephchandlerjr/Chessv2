@@ -21,7 +21,7 @@ public class ChessModelImpl implements ChessModel{
 	private boolean whiteCheckmate;
 
 	public ChessModelImpl(){
-		newGame();
+		board = new Square[8][8];
 		//set initial location of pieces involved in castling
 		initBQR = board[0][0];
 		initBKR = board[0][7];
