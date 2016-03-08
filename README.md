@@ -7,6 +7,6 @@ I intended this to be the end of this program to move on to other
 learning opportunities but I doubt my OCD will allow me to that so expect this 
 code to be revised and extended upon in the future.
 
-![UML Diagram](\\etc\Chess1.1.jpg?raw=true "UML Diagram")
+![UML Diagram](\etc\Chess1.1.jpg?raw=true "UML Diagram")
 
 
