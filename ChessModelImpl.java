@@ -21,11 +21,7 @@ public class ChessModelImpl implements ChessModel{
 	private boolean whiteCheckmate;
 
 	public ChessModelImpl(){
-		scoreSheet = new Score();
-		board = new Square[8][8];
-		initializeBoard();
-		state = new ChessState();
-		updateStateObject(false,false,null);
+		newGame();
 		//set initial location of pieces involved in castling
 		initBQR = board[0][0];
 		initBKR = board[0][7];
@@ -33,6 +29,14 @@ public class ChessModelImpl implements ChessModel{
 		initWKR = board[7][7];
 		initBK =  board[0][4];
 		initWK =  board[7][4];
+	}
+	public void newGame(){
+		scoreSheet = new Score();
+		board = new Square[8][8];
+		initializeBoard();
+		state = new ChessState();
+		updateStateObject(false,false,null);
+		notifyObservers();
 	}
 	//methods that implement ChessObservable
 	public void registerObserver(Observer obs){
@@ -149,8 +153,7 @@ public class ChessModelImpl implements ChessModel{
 	}
 	public boolean takeAction(ChessMove move)
 	{
-		if(move.isCastle())
-		{
+		if(move.isCastle()){
 			boolean validMove = isValidCastle(move.getColor(), move.getCastleSide());
 			if(!validMove){return false;}
 
@@ -170,38 +173,32 @@ public class ChessModelImpl implements ChessModel{
 				return false;
 			}
 		}
-		else if(move.isEnPassant())
-		{
+		else if(move.isEnPassant()){
 			boolean validMove = isValidEnPassant(move);
                         if(!validMove){return false;}
 			moveEnPassant(move);
 			boolean invalid = kingInCheck(move.getColor());
-			if(invalid)
-			{
+			if(invalid){
 				unMoveEnPassant(move);
 				return false;
 			};
 		}
-		else if (move.isTwoRowPawnMove())
-		{
+		else if (move.isTwoRowPawnMove()){
 			boolean validMove = isValidTwoRowPawnMove(move);
                         if(!validMove){return false;}
 			movePawnTwoRows(move);
 			boolean invalid = kingInCheck(move.getColor());
-			if(invalid)
-			{
+			if(invalid){
 				unMovePawnTwoRows(move);
 				return false;
 			};
 		}
-		else
-		{
+		else{
 			boolean validMove = isValidMove(move);
                         if(!validMove){return false;}
 			movePiece(move);
 			boolean invalid = kingInCheck(move.getColor());
-			if(invalid)
-			{
+			if(invalid){
 				unMovePiece(move);
 				return false;
 			};

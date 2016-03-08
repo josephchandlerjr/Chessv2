@@ -162,7 +162,6 @@ public class ChessView implements Observer{
 		public void mouseReleased(MouseEvent e){
 			SquarePanel from = (SquarePanel)(lastPressed.getSource());
 			SquarePanel to = (SquarePanel)(lastEntered.getSource());
-			System.out.printf("%s%s %s%s\n",from.row, from.col, to.row, to.col);
 			takeAction(from.row,from.col,to.row,to.col);
 		}  
 	}//end inner class BoardListener
