@@ -125,9 +125,6 @@ public class ChessModelImpl implements ChessModel{
  
 		// check if we need to promote pawn and if remote game send move made over socket
 		if (executed){
-			String temp = opponent;
-			opponent = player;
-			player = temp;
 			updateStateObject();
 			notifyObservers();
 		}

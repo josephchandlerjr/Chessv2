@@ -38,6 +38,10 @@ public class ChessView implements Observer{
 					Image image = findResourceByPieceID(pieceID);
 					squares[r][c].setImage(image);
 				}
+				else{
+					Image image = null;
+					squares[r][c].setImage(image);
+				}
 			}
 		}
 	}
@@ -69,7 +73,7 @@ public class ChessView implements Observer{
 	}
 
         public void executeMove(int fromRow, int fromCol, int toRow, int toCol){
-		//controller.executeMove(fromRow, fromCol, toRow, toCol);
+		controller.takeAction(fromRow, fromCol, toRow, toCol);
 	}
 
 	public void build(){

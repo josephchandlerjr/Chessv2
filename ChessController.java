@@ -12,6 +12,6 @@ public abstract class ChessController{
 		this.blackPlayer = blackPlayer;
 		this.model = model;
 	}
-	public abstract void executeMove(int fromRow, int fromCol, int toRow, int toCol);
+	public abstract void takeAction(int fromRow, int fromCol, int toRow, int toCol);
 }
 
