@@ -1,3 +1,4 @@
+package com.chessv2;
 
 public interface ChessController extends Observer{
 

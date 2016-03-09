@@ -1,3 +1,5 @@
+package com.chessv2;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
@@ -28,7 +30,6 @@ public class ChessView implements Observer{
 		this.model = model;
 		model.registerObserver(this);
 		build();
-		update();
 	}
 	public void update(){
 		ChessState state = model.getState();
@@ -97,7 +98,7 @@ public class ChessView implements Observer{
 			}
 		}
 
-		String fileName =  color + piece + ".png";
+		String fileName =  ".\\etc\\" + color + piece + ".png";
 		Image image = new ImageIcon(fileName).getImage(); 
 		return image;
 	}
@@ -109,6 +110,7 @@ public class ChessView implements Observer{
 	public void build(){
 		frame = new JFrame("CHESS");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		buildMenuBar();
 
 		GridLayout grid = new GridLayout(8,8);
 		grid.setVgap(1);
@@ -123,6 +125,20 @@ public class ChessView implements Observer{
 
 		frame.pack();
 		frame.setVisible(true);
+	}
+	public void buildMenuBar(){
+		JMenuBar menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
+		JMenu game = new JMenu("Game");
+		JMenuItem newGame = new JMenuItem("New Game");
+		newGame.addActionListener(new ActionListener(){
+					  	public void actionPerformed(ActionEvent e){
+							controller.newGame();
+						}
+					 });
+		game.add(newGame);
+		menuBar.add(game);
+
 	}
 	public Color otherSquareColor(Color c){
 		if(c == blackSquareColor){

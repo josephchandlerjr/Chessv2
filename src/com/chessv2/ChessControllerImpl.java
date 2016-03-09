@@ -1,4 +1,7 @@
+package com.chessv2;
+
 import java.io.*;
+
 
 public class ChessControllerImpl implements ChessController{
 	ObjectInputStream whitePlayer;

@@ -1,3 +1,4 @@
+package com.chessv2;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;

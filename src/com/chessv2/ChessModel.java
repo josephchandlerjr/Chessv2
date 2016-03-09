@@ -1,3 +1,4 @@
+package com.chessv2;
 
 public interface ChessModel extends Observable{
 	public void takeAction(int fromRow,int fromCol,int toRow, int toCol);

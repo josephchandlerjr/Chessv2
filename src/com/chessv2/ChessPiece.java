@@ -1,3 +1,4 @@
+package com.chessv2;
 
 import java.io.*;
 import java.net.*;
