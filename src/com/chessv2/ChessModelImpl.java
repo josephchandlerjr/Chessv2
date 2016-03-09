@@ -7,8 +7,8 @@ public class ChessModelImpl implements ChessModel{
 	List<Observer> observers = new ArrayList<Observer>();
 	ChessState state;
 	Square[][] board;
-	String player = "WHITE";
-	String opponent = "BLACK";
+	String player;
+	String opponent;
 	String lastPlayerToMove;
 	Square initWK;
 	Square initBK;
@@ -37,6 +37,8 @@ public class ChessModelImpl implements ChessModel{
 		board = new Square[8][8];
 		initializeBoard();
 		state = new ChessState();
+		player = "WHITE";
+		opponent = "BLACK";
 		updateStateObject(false,false,null);
 		notifyObservers();
 	}

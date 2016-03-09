@@ -4,9 +4,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 
-import java.util.*;
 import javax.imageio.*;
 
 /**
@@ -129,16 +127,27 @@ public class ChessView implements Observer{
 	public void buildMenuBar(){
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
-		JMenu game = new JMenu("Game");
+		JMenu file = new JMenu("File");
 		JMenuItem newGame = new JMenuItem("New Game");
+		newGame.setMnemonic(KeyEvent.VK_N);
+		newGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+					                      Event.CTRL_MASK));
 		newGame.addActionListener(new ActionListener(){
 					  	public void actionPerformed(ActionEvent e){
 							controller.newGame();
-						}
-					 });
-		game.add(newGame);
-		menuBar.add(game);
+						}});
+		file.add(newGame);
+		menuBar.add(file);
 
+		JMenuItem exit = new JMenuItem("Exit");
+		exit.setMnemonic(KeyEvent.VK_X);
+		exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
+					                   Event.CTRL_MASK));
+		exit.addActionListener(new ActionListener(){
+					   	public void actionPerformed(ActionEvent e){
+							controller.exit();
+						}});
+		file.add(exit);
 	}
 	public Color otherSquareColor(Color c){
 		if(c == blackSquareColor){

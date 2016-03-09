@@ -32,6 +32,9 @@ public class ChessControllerImpl implements ChessController{
 	public void newGame(){
 		model.newGame();
 	}
+	public void exit(){
+		System.exit(0);
+	}
 
 
 
